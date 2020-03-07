@@ -15,6 +15,10 @@
 <body>
     <div id="app">
         <a-scene vr-mode-ui="enterVRButton: #myEnterVRButton;">
+            <a-assets>
+                <a-asset-item id="tree-obj" src="models/corridor_short.obj"></a-asset-item>
+                <a-asset-item id="tree-mtl" src="models/corridor_short.mtl"></a-asset-item>
+              </a-assets>
             <a id="myEnterVRButton" href="#"></a>
             <a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false"></a-camera>
             <!-- vue js component that wraps our aframe entity -->
@@ -26,8 +30,7 @@
             <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
             <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
             <a-sky color="#ECECEC"></a-sky>
-            <a-entity id="vector" line="start: 0, 1, 0; end: 2 0 -5; color: red"
-          ></a-entity>
+            <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
         </a-scene>
     </div>
 

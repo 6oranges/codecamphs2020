@@ -131,14 +131,26 @@ function colliding(P,r){
 }
 var players = {};
 var flags = [];
+for (var i=0;i<10;i++){
+    flags.push([(Math.random()-.5)*35,(Math.random()-.5)*35,(Math.random()-.5)*35])
+}
 setInterval(function (){ // Update
     for (key of Object.keys(players)){
+        
         player=players[key];
-        player.x+=player.mv[0];
-        player.y+=player.mv[1];
-        player.z+=player.mv[2];
+        vec3.add(player.v,player.v,player.a);
+        vec3.scale(player.v,player.v,.95)
+        player.x+=player.v[0];
         if (colliding([player.x,player.y,player.z],.5)){
-            console.log("aregrneiohd");
+            player.x-=player.v[0];
+        }
+        player.y+=player.v[1];
+        if (colliding([player.x,player.y,player.z],.5)){
+            player.y-=player.v[1];
+        }
+        player.z+=player.v[2];
+        if (colliding([player.x,player.y,player.z],.5)){
+            player.z-=player.v[2];
         }
     }
 },15);
@@ -150,13 +162,12 @@ function cos(x){
 }
 io.on('connection', function (socket) {
     console.log("connected client of id: ",socket.id);
-    players[socket.id]={x:0,y:0,z:0,mv:[0,0,0]};
+    players[socket.id]={x:0,y:5,z:0,v:[0,0,0],a:[0,0,0]};
     socket.emit({players:players,flags:flags});
     socket.on('connected', function (data) {
         
     })
     socket.on('update', function(data){
-        players[socket.id].mv=[0,0,0];
         var forward=[0,0,-1];
         vec3.rotateX(forward,forward,[0,0,0],data.rotation.x*Math.PI/180);
         vec3.rotateY(forward,forward,[0,0,0],data.rotation.y*Math.PI/180);
@@ -172,24 +183,25 @@ io.on('connection', function (socket) {
         vec3.scale(forward,forward,s);
         vec3.scale(right,right,s);
         vec3.scale(up,up,s);
-        var mv = players[socket.id].mv;
+        players[socket.id].a=[0,0,0];
+        var a = players[socket.id].a;
         if (data.forward){
-            vec3.add(mv,mv,forward);
+            vec3.add(a,a,forward);
         }
         if (data.left){
-            vec3.sub(mv,mv,right);
+            vec3.sub(a,a,right);
         }
         if (data.right){
-            vec3.add(mv,mv,right);
+            vec3.add(a,a,right);
         }
         if (data.backward){
-            vec3.sub(mv,mv,forward);
+            vec3.sub(a,a,forward);
         }
         if (data.up){
-            vec3.add(mv,mv,up);
+            vec3.add(a,a,up);
         }
         if (data.down){
-            vec3.sub(mv,mv,up);
+            vec3.sub(a,a,up);
         }
         socket.emit('update',{players:players,flags:flags});
     })
