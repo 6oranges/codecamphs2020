@@ -1,4 +1,4 @@
-Vue.config.ignoredElements = [
+/*Vue.config.ignoredElements = [
     'a-scene',
     'a-entity',
     'a-camera',
@@ -54,7 +54,63 @@ Vue.config.ignoredElements = [
       this.findFurniture()
     }
   })
-
+*/
 socket = io.connect('http://localhost:3000');
-
+camera = document.getElementById("camera");
 socket.emit('connected', "Hi");
+
+
+var info = {}
+setInterval(function (){
+  info.rotation=camera.getAttribute("rotation");
+  socket.emit('update',info);
+},15)
+var position = {x:0,y:0,z:0};
+var players={};
+socket.on('update',obj=>{
+  var id=socket.id;
+  players=obj.players;
+  camera.getAttribute("position").x=players[id].x;
+  camera.getAttribute("position").y=players[id].y;
+  camera.getAttribute("position").z=players[id].z;
+})
+document.addEventListener('keydown',e=>{
+  if (e.code=="KeyW"){
+    info.forward=true;
+  }
+  if (e.code=="KeyS"){
+    info.backward=true;
+  }
+  if (e.code=="Space"){
+    info.up=true;
+  }
+  if (e.code=="LeftShift"){
+    info.down=true;
+  }
+  if (e.code=="KeyA"){
+    info.left=true;
+  }
+  if (e.code=="KeyD"){
+    info.right=true;
+  }
+})
+document.addEventListener('keyup',e=>{
+  if (e.code=="KeyW"){
+    info.forward=false;
+  }
+  if (e.code=="KeyS"){
+    info.backward=false;
+  }
+  if (e.code=="Space"){
+    info.up=false;
+  }
+  if (e.code=="LeftShift"){
+    info.down=false;
+  }
+  if (e.code=="KeyA"){
+    info.left=false;
+  }
+  if (e.code=="KeyD"){
+    info.right=false;
+  }
+})
