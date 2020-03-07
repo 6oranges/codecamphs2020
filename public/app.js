@@ -67,13 +67,13 @@ setInterval(function (){
   var gamepad = navigator.getGamepads()[0];
   if (gamepad) {
 
-    if (gamepad.buttons[0].value == 1) {
+    if (gamepad.buttons[0].pressed) {
       info.backward = true;
     } else {
       info.backward = false;
     }
 
-    if (gamepad.buttons[1].value == 1) {
+    if (gamepad.buttons[1].pressed) {
       info.forward = true;
     } else {
       info.forward = false;
