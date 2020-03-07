@@ -55,7 +55,7 @@
     }
   })
 */
-socket = io.connect('https://capturetheflags.herokuapp.com:3000');
+socket = io.connect('https://capturetheflags.herokuapp.com');
 camera = document.getElementById("camera");
 socket.emit('connected', "Hi");
 
