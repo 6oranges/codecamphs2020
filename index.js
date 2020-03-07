@@ -90,9 +90,9 @@ function collides(A,B,C,P,r){
 //Start script
 //SPOT FOR GAME LOGIC
 
-
+ 
 var meshes = [];
-fs.readFile('test.obj', 'utf8', function(err, contents) {
+function Obstacle(err,contents){
     console.log(err);
     var faces = [];
     var vertices = [];
@@ -108,12 +108,20 @@ fs.readFile('test.obj', 'utf8', function(err, contents) {
                 stuff.push(params[i].split("/"));
             }
             for (var i=1;i<stuff.length-1;i++){
-                faces.push([stuff[0][0],stuff[i][0],stuff[i+1][0]])
+                faces.push([stuff[0][0]-1,stuff[i][0]-1,stuff[i+1][0]-1])
             }   
         }
     }
     meshes.push({faces:faces,vertices:vertices});
-});
+}
+fs.readFile('test.obj', 'utf8', Obstacle);
+function colliding(P,r){
+    for (var mesh of meshes){
+        for (var face of mesh.faces){
+
+        }
+    }
+}
 var players = {};
 var flags = [];
 setInterval(function (){ // Update
