@@ -69,6 +69,7 @@ setInterval(function (){
 
     if (gamepad.buttons[0] == 1) {
       info.backward = true;
+      console.log("hi")l
     } else {
       info.backward = false;
     }
