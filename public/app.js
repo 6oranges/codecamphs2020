@@ -63,6 +63,42 @@ socket.emit('connected', "Hi");
 var info = {}
 setInterval(function (){
   info.rotation=camera.getAttribute("rotation");
+
+  var gamepad = navigator.getGamepads()[0];
+  if (gamepad) {
+
+    if (gamepad.buttons[0] == 1) {
+      info.backward = true;
+    } else {
+      info.backward = false;
+    }
+
+    if (gamepad.buttons[1] == 1) {
+      info.forward = true;
+    } else {
+      info.forward = false;
+    }
+
+    if (gamepad.axis[0] == -1) {
+      info.left = true;
+    } else if (gamepad.axis[0] == 1) {
+      info.right = true;
+    } else {
+      info.left = false;
+      info.right = false;
+    }
+
+    if (gamepad.axis[1] == -1) {
+      info.up = true;
+    } else if (gamepad.axis[1] == 1) {
+      info.down = true;
+    } else {
+      info.up = false;
+      info.down = false;
+    }
+
+  }
+
   socket.emit('update',info);
 },15)
 var position = {x:0,y:0,z:0};
@@ -74,6 +110,7 @@ socket.on('update',obj=>{
   camera.getAttribute("position").y=players[id].y;
   camera.getAttribute("position").z=players[id].z;
 })
+
 document.addEventListener('keydown',e=>{
   if (e.code=="KeyW"){
     info.forward=true;
@@ -84,7 +121,7 @@ document.addEventListener('keydown',e=>{
   if (e.code=="Space"){
     info.up=true;
   }
-  if (e.code=="ShiftLeft"){
+  if (e.code=="LeftShift"){
     info.down=true;
   }
   if (e.code=="KeyA"){
@@ -104,7 +141,7 @@ document.addEventListener('keyup',e=>{
   if (e.code=="Space"){
     info.up=false;
   }
-  if (e.code=="ShiftLeft"){
+  if (e.code=="LeftShift"){
     info.down=false;
   }
   if (e.code=="KeyA"){
@@ -114,3 +151,28 @@ document.addEventListener('keyup',e=>{
     info.right=false;
   }
 })
+
+AFRAME.registerComponent('y-button-listener', {
+  init: function () {
+    var el = this.el;
+    el.addEventListener('ybuttondown', function (evt) {
+      info.up = true;
+    });
+    el.addEventListener('ybuttonup', function (evt) {
+      info.up = false;
+    });
+
+    el.addEventListener('xbuttondown', function (evt) {
+      info.down = true;
+    });
+    el.addEventListener('xbuttondown', function (evt) {
+      info.down = false;
+    });
+
+    el.addEventListener('thumbstickup', function (evt) {
+      info.down = true;
+    });
+    el.addEventListener('xbuttondown', function (evt) {
+      info.down = false;
+    });
+  }
