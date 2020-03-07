@@ -148,6 +148,7 @@ io.on('connection', function (socket) {
     socket.on('update', function(data){
         players[socket.id].mv={x:0,y:0,z:0};
         var forward=[0,0,-1];
+        console.log(data);
         
         vec3.rotateZ(forward,forward,[0,0,0],data.rotation.y*Math.PI/180);
         vec3.rotateY(forward,forward,[0,0,0],data.rotation.X*Math.PI/180);
@@ -159,10 +160,10 @@ io.on('connection', function (socket) {
             players[socket.id].mv.z=forward[2];
         }
         if (data.left){
-            players[socket.id].mv.y-=s;
+            players[socket.id].mv.y=-s;
         }
         if (data.right){
-            players[socket.id].mv.y+=s;
+            players[socket.id].mv.y=+s;
         }
         if (data.backward){
             players[socket.id].mv.x=-forward[0];
@@ -170,10 +171,10 @@ io.on('connection', function (socket) {
             players[socket.id].mv.z=-forward[2];
         }
         if (data.up){
-            players[socket.id].mv.z+=s;
+            players[socket.id].mv.z=+s;
         }
         if (data.down){
-            players[socket.id].mv.z-=s;
+            players[socket.id].mv.z=+s;
         }
         socket.emit('update',{players:players,flags:flags});
     })
