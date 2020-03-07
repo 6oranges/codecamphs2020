@@ -66,6 +66,12 @@ setInterval(function (){
 
   var gamepad = navigator.getGamepads()[0];
   if (gamepad) {
+      
+    gamepad.buttons.forEach(function(button) {
+        if (button == 1) {
+            console.log("press " + button);
+        }
+    })
 
     if (gamepad.buttons[0] == 1) {
       info.backward = true;
