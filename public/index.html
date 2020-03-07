@@ -18,7 +18,7 @@
             <a id="myEnterVRButton" href="#"></a>
             <a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false" look-controls="pointerLockEnabled: true"></a-camera>
             <!-- vue js component that wraps our aframe entity -->
-            <vue-player v-for="(player, i) in players" :player="player" :key="i">
+            <vue-player v-for="(player, i) in players" :key="socket.id" :index="i" :player="player">
 
             </vue-player>
             <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
