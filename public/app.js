@@ -84,7 +84,7 @@ document.addEventListener('keydown',e=>{
   if (e.code=="Space"){
     info.up=true;
   }
-  if (e.code=="LeftShift"){
+  if (e.code=="ShiftLeft"){
     info.down=true;
   }
   if (e.code=="KeyA"){
@@ -104,7 +104,7 @@ document.addEventListener('keyup',e=>{
   if (e.code=="Space"){
     info.up=false;
   }
-  if (e.code=="LeftShift"){
+  if (e.code=="ShiftLeft"){
     info.down=false;
   }
   if (e.code=="KeyA"){

@@ -114,22 +114,32 @@ function Obstacle(err,contents){
     }
     meshes.push({faces:faces,vertices:vertices});
 }
-fs.readFile('test.obj', 'utf8', Obstacle);
+fs.readFile('public/models/corridor_short.obj', 'utf8', Obstacle);
 function colliding(P,r){
     for (var mesh of meshes){
         for (var face of mesh.faces){
-
+            if (collides(mesh.vertices[face[0]],
+                mesh.vertices[face[1]],
+                mesh.vertices[face[2]],
+                P,r
+                )){
+                    return true;
+                }
         }
     }
+    return false;
 }
 var players = {};
 var flags = [];
 setInterval(function (){ // Update
     for (key of Object.keys(players)){
         player=players[key];
-        player.x+=player.mv.x;
-        player.y+=player.mv.y;
-        player.z+=player.mv.z;
+        player.x+=player.mv[0];
+        player.y+=player.mv[1];
+        player.z+=player.mv[2];
+        if (colliding([player.x,player.y,player.z],.5)){
+            console.log("aregrneiohd");
+        }
     }
 },15);
 function sin(x){
@@ -140,41 +150,46 @@ function cos(x){
 }
 io.on('connection', function (socket) {
     console.log("connected client of id: ",socket.id);
-    players[socket.id]={x:0,y:0,z:0,mv:{x:0,y:0,z:0}};
+    players[socket.id]={x:0,y:0,z:0,mv:[0,0,0]};
     socket.emit({players:players,flags:flags});
     socket.on('connected', function (data) {
         
     })
     socket.on('update', function(data){
-        players[socket.id].mv={x:0,y:0,z:0};
+        players[socket.id].mv=[0,0,0];
         var forward=[0,0,-1];
-        console.log(data);
+        vec3.rotateX(forward,forward,[0,0,0],data.rotation.x*Math.PI/180);
+        vec3.rotateY(forward,forward,[0,0,0],data.rotation.y*Math.PI/180);
         
-        vec3.rotateZ(forward,forward,[0,0,0],data.rotation.y*Math.PI/180);
-        vec3.rotateY(forward,forward,[0,0,0],data.rotation.X*Math.PI/180);
+        var right = vec3.create();
+        vec3.cross(right,forward,[0,1,0])
+        var up = vec3.create();
+        vec3.cross(up,right,forward);
         const s = .01;
+        vec3.normalize(forward,forward);
+        vec3.normalize(right,right);
+        vec3.normalize(up,up);
         vec3.scale(forward,forward,s);
+        vec3.scale(right,right,s);
+        vec3.scale(up,up,s);
+        var mv = players[socket.id].mv;
         if (data.forward){
-            players[socket.id].mv.x=forward[0];
-            players[socket.id].mv.y=forward[1];
-            players[socket.id].mv.z=forward[2];
+            vec3.add(mv,mv,forward);
         }
         if (data.left){
-            players[socket.id].mv.y=-s;
+            vec3.sub(mv,mv,right);
         }
         if (data.right){
-            players[socket.id].mv.y=+s;
+            vec3.add(mv,mv,right);
         }
         if (data.backward){
-            players[socket.id].mv.x=-forward[0];
-            players[socket.id].mv.y=-forward[1];
-            players[socket.id].mv.z=-forward[2];
+            vec3.sub(mv,mv,forward);
         }
         if (data.up){
-            players[socket.id].mv.z=+s;
+            vec3.add(mv,mv,up);
         }
         if (data.down){
-            players[socket.id].mv.z=+s;
+            vec3.sub(mv,mv,up);
         }
         socket.emit('update',{players:players,flags:flags});
     })
