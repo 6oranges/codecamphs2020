@@ -10,7 +10,15 @@ var http = require('http').createServer(app);
 
 var io = require('socket.io')(http);
 
+
+//SPOT FOR GAME LOGIC
+
+
 io.on('connection', function (socket) {
+
+    socket.on('connected', function (data) {
+        console.log(data);
+    })
 
 })
 
