@@ -1,60 +1,33 @@
-/*Vue.config.ignoredElements = [
+Vue.config.ignoredElements = [
     'a-scene',
     'a-entity',
     'a-camera',
     'a-box'
-  ]
-  Vue.component('vue-player', {
-    props: ['index'],
+]
+Vue.component('vue-player', {
+    props: ['index', 'player'],
     template: `
-        <a-entity :position="pos"></a-entity>`,
+        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 0.5;" :position="player.x + ' ' + player.y + ' ' + player.z"></a-entity>`,
     data () {
 
     },
     computed: {
-
-      pos: function() {
-        // we want rows of 5
-        var xPos = this.index % 5 * this.stepSize - this.stepSize * 2
-        var zPos = Math.floor(this.index / 5) * -this.stepSize -2
-        return `${xPos} 0 ${zPos}`
-      }
       
     }
-  })
-  new Vue({
+})
+new Vue({
     el: '#app',
     data: {
-      ids: [],
-      searchStr: 'chair',
-      placement: null
-    },
-    methods: {
-      findFurniture: _.debounce(function() {
-        // check out 3d.io furniture documentation here: https://3d.io/docs/api/1/furniture.html
-        io3d.furniture.search(this.searchStr, {limit: 300})
-        .then(result => {
-          if (result && result.length) {
-            result = result.map(item => item.id)
-            this.ids = []
-            const placement = io3d.utils.uuid.generate()
-            this.placement = placement
-            // populate array with delay
-            result.forEach((el, i) => {
-              _.delay(() => {
-                if (placement === this.placement) this.ids.push(el) 
-              }, 25 * i)
-            })
-          }
-        })
-        .catch(console.error)
-      }, 300)
+      players: []
+  },
+  methods: {
+      
     },
     created: function() {
-      this.findFurniture()
+      
     }
-  })
-*/
+})
+
 socket = io.connect(location.href);
 camera = document.getElementById("camera");
 socket.emit('connected', "Hi");
@@ -102,13 +75,12 @@ setInterval(function (){
   socket.emit('update',info);
 },15)
 var position = {x:0,y:0,z:0};
-var players={};
 socket.on('update',obj=>{
   var id=socket.id;
-  players=obj.players;
-  camera.getAttribute("position").x=players[id].x;
-  camera.getAttribute("position").y=players[id].y;
-  camera.getAttribute("position").z=players[id].z;
+  app.players=obj.players;
+  camera.getAttribute("position").x=app.players[id].x;
+  camera.getAttribute("position").y=app.players[id].y;
+  camera.getAttribute("position").z=app.players[id].z;
 })
 
 document.addEventListener('keydown',e=>{
