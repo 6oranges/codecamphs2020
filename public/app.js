@@ -79,9 +79,9 @@ socket.on('update',obj=>{
   var id=socket.id;
   app.players=Object.values(obj.players);
    
-  camera.getAttribute("position").x=app.players[id].x;
-  camera.getAttribute("position").y=app.players[id].y;
-  camera.getAttribute("position").z=app.players[id].z;
+  camera.getAttribute("position").x=obj.players[id].x;
+  camera.getAttribute("position").y=obj.players[id].y;
+  camera.getAttribute("position").z=obj.players[id].z;
 })
 
 document.addEventListener('keydown',e=>{
