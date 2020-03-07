@@ -1,0 +1,7 @@
+#myEnterVRButton {
+    width: 100px;
+    height: 100px;
+    background-color: purple;
+    z-index: 10001;
+    position: fixed;
+}

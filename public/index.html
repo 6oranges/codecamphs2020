@@ -14,7 +14,8 @@
 
 <body>
     <div id="app">
-        <a-scene>
+        <a-scene vr-mode-ui="enterVRButton: #myEnterVRButton;">
+            <a id="myEnterVRButton" href="#"></a>
             <a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false"></a-camera>
             <!-- vue js component that wraps our aframe entity -->
             <vue-player v-for="(uuid, i) in ids" :key="uuid.id" :index="i">
