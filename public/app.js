@@ -152,27 +152,4 @@ document.addEventListener('keyup',e=>{
   }
 })
 
-AFRAME.registerComponent('oculus-controls', {
-  init: function () {
-    var el = this.el;
-    el.addEventListener('ybuttondown', function (evt) {
-      info.up = true;
-    });
-    el.addEventListener('ybuttonup', function (evt) {
-      info.up = false;
-    });
 
-    el.addEventListener('xbuttondown', function (evt) {
-      info.down = true;
-    });
-    el.addEventListener('xbuttondown', function (evt) {
-      info.down = false;
-    });
-
-    el.addEventListener('thumbstickup', function (evt) {
-      info.down = true;
-    });
-    el.addEventListener('xbuttondown', function (evt) {
-      info.down = false;
-    });
-  }
