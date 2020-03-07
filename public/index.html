@@ -21,7 +21,7 @@
             <vue-player v-for="(player, i) in players" :key:"i" :index="i" :player="player">
 
             </vue-player>
-            <a-entity v-for="player in players" geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="ff0000" :position="player.x + ' ' + player.y + ' ' + player.z"></a-entity>
+            <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="ff0000" position="0 0 5"></a-entity>
         </a-scene>
     </div>
 
