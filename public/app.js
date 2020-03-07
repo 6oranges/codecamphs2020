@@ -10,7 +10,7 @@ Vue.component('vue-player', {
     template: `<a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="ff0000" position="player.x + ' ' + player.y + ' ' + player.z"></a-entity>`
 });
 
-new Vue({
+var app = new Vue({
     el: '#app',
     data: {
       players: []
