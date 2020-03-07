@@ -79,18 +79,18 @@ setInterval(function (){
       info.forward = false;
     }
 
-    if (gamepad.axis[0] == -1) {
+    if (gamepad.axes[0] == -1) {
       info.left = true;
-    } else if (gamepad.axis[0] == 1) {
+    } else if (gamepad.axes[0] == 1) {
       info.right = true;
     } else {
       info.left = false;
       info.right = false;
     }
 
-    if (gamepad.axis[1] == -1) {
+    if (gamepad.axes[1] == -1) {
       info.up = true;
-    } else if (gamepad.axis[1] == 1) {
+    } else if (gamepad.axes[1] == 1) {
       info.down = true;
     } else {
       info.up = false;
