@@ -5,9 +5,9 @@ Vue.config.ignoredElements = [
     'a-box'
 ]
 Vue.component('vue-player', {
-    props: ['index', 'player'],
+    props: ['player', 'key'],
     template: `
-        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 0.5;" :position="player.x + ' ' + player.y + ' ' + player.z" :id="index"></a-entity>`,
+        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 0.5;" color="red" :position="player.x + ' ' + player.y + ' ' + player.z" :key="key"></a-entity>`,
     data () {
 
     },
