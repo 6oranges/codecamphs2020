@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="aframe.min.js"></script>
-        <script src="vue.js"></script>
 
-        <link href="style.css" type="text/css" rel="stylesheet">
+<head>
+    <script src="aframe.min.js"></script>
+    <script src="vue.js"></script>
 
-        <title>CTF</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
 
-        <script src="socket.io-1.4.5.js"></script>
-    </head>
+    <title>CTF</title>
 
-    <body>
+    <script src="socket.io-1.4.5.js"></script>
+</head>
 
-        <script src="app.js"></script>
-    </body>
+<body>
+    <div id="app">
+        <input class="input" v-model="searchStr" @input="findFurniture">
+        <a-scene>
+            <a-camera position="0 0 0" rotation="0 0 0"></a-camera>
+            <!-- vue js component that wraps our aframe entity -->
+            <vue-player v-for="(uuid, i) in ids" :key="uuid.id" :index="i">
+
+            </vue-player>
+        </a-scene>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
 </html>
