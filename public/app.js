@@ -5,9 +5,9 @@ Vue.config.ignoredElements = [
     'a-box'
 ]
 Vue.component('vue-player', {
-    props: ['player', 'key'],
+    props: ['index', 'player'],
     template: `
-        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 0.5;" color="red" :position="player.x + ' ' + player.y + ' ' + player.z" :key="key"></a-entity>`,
+        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="red" :position="player.x + ' ' + player.y + ' ' + player.z" :key="key"></a-entity>`,
     data () {
 
     },
@@ -77,7 +77,8 @@ setInterval(function (){
 var position = {x:0,y:0,z:0};
 socket.on('update',obj=>{
   var id=socket.id;
-  app.players=obj.players;
+  app.players=Object.values(obj.players);
+   
   camera.getAttribute("position").x=app.players[id].x;
   camera.getAttribute("position").y=app.players[id].y;
   camera.getAttribute("position").z=app.players[id].z;
