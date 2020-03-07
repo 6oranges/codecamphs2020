@@ -21,7 +21,7 @@
             <vue-player v-for="(player, i) in app.players" :key="socket.id" :index="i" :player="player">
 
             </vue-player>
-           
+            <a-entity geometry="primitive: cylinder; openEnded: true" material="side: double"></a-entity>
         </a-scene>
     </div>
 
