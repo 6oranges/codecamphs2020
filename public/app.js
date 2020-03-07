@@ -68,9 +68,7 @@ setInterval(function (){
   if (gamepad) {
       
     gamepad.buttons.forEach(function(button) {
-        if (button == 1) {
-            console.log(button);
-        }
+        console.log(button);
     })
 
     if (gamepad.buttons[0] == 1) {
