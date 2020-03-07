@@ -152,7 +152,7 @@ document.addEventListener('keyup',e=>{
   }
 })
 
-AFRAME.registerComponent('y-button-listener', {
+AFRAME.registerComponent('oculus-controls', {
   init: function () {
     var el = this.el;
     el.addEventListener('ybuttondown', function (evt) {
