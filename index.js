@@ -4,6 +4,7 @@ var app = express();
 var cors = require('cors');
 
 app.use(cors());
+app.use(express.static('public'));
 
 var http = require('http').createServer(app);
 
