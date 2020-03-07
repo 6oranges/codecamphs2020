@@ -7,7 +7,7 @@ Vue.config.ignoredElements = [
 Vue.component('vue-player', {
     props: ['index', 'player'],
     template: `
-        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="ff0000" :position="player.x + ' ' + player.y + ' ' + player.z" :io3d-player="socket.id"></a-entity>`
+        <a-entity geometry="primitive: sphere; segmentsWidth: 4; segmentsHeight: 4; radius: 1;" color="ff0000" :position="player.x + ' ' + player.y + ' ' + player.z" :io3d-player="index"></a-entity>`
 })
 new Vue({
     el: '#app',
