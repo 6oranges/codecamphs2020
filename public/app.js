@@ -8,6 +8,7 @@ Vue.config.ignoredElements = [
     'a-assets',
     'a-asset-item'
 ]
+
 Vue.component('vue-player', {
     props: ['index', 'player'],
     template: `
@@ -26,10 +27,10 @@ var app = new Vue({
   },
   methods: {
       
-    },
-    created: function() {
+  },
+  created: function() {
       
-    }
+  }
 })
 var vec3=glMatrix.vec3;
 var socket = io.connect(location.href);
