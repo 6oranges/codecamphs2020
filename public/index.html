@@ -10,24 +10,27 @@
     <title>CTF</title>
 
     <script src="socket.io-1.4.5.js"></script>
+    <script src="gl-matrix-min.js"></script>
 </head>
 
 <body>
-    <div id="app">
-        <a-scene vr-mode-ui="enterVRButton: #myEnterVRButton;">
-            <a-assets>
-                <a-asset-item id="tree-obj" src="models/corridor_short.obj"></a-asset-item>
-                <a-asset-item id="tree-mtl" src="models/corridor_short.mtl"></a-asset-item>
-              </a-assets>
-            <a id="myEnterVRButton" href="#"></a>
-            <a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false"></a-camera>
-            <!-- vue js component that wraps our aframe entity -->
-            <vue-player v-for="(uuid, i) in ids" :key="uuid.id" :index="i">
+    <a-scene id="app">
+        <a-assets>
+            <a-asset-item id="tree-obj" src="models/map.obj"></a-asset-item>
+            <a-asset-item id="tree-mtl" src="models/intersection_sixway.mtl"></a-asset-item>
+            </a-assets>
+        <a-entity id="flags"></a-entity>
+        <a-box></a-box>
+        <a-entity id="offset"><a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false"></a-camera></a-entity>
+        <!-- vue js component that wraps our aframe entity -->
+        <vue-player v-for="(player,key) in players" :key="key" :player="player">
 
-            </vue-player>
-            <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
-        </a-scene>
-    </div>
+        </vue-player>
+        <vue-flag v-for="(flag,key) in flags" :key="key" :flag="flag">
+
+        </vue-flag>
+        <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
+    </a-scene>
 
     <script src="app.js"></script>
 </body>

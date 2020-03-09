@@ -25,18 +25,19 @@ function collides(A,B,C,P,r){
     var rr = r * r;
     var AB=vec3.create();
     var AC=vec3.create();
-    var BC=vec3.create();
-    var CA=vec3.create();
+    
     vec3.sub(AB,B,A);
     vec3.sub(AC,C,A);
-    vec3.sub(BC,C,B);
-    vec3.sub(CA,A,C);
+    
     
     var V = vec3.create();
     vec3.cross(V,AB,AC);
     var d = vec3.dot(A,V);
     var e = vec3.dot(V,V);
     var sep1 = d * d > rr * e;
+    if (sep1){
+        return false;
+    }
     var aa = vec3.dot(A,A);
     var ab = vec3.dot(A,B);
     var ac = vec3.dot(A,C);
@@ -46,6 +47,14 @@ function collides(A,B,C,P,r){
     var sep2 = (aa > rr) && (ab > aa) && (ac > aa);
     var sep3 = (bb > rr) && (ab > bb) && (bc > bb);
     var sep4 = (cc > rr) && (ac > cc) && (bc > cc);
+    if (sep2||sep3||sep4){
+        return false;
+    }
+    var BC=vec3.create();
+    var CA=vec3.create();
+    vec3.sub(BC,C,B);
+    vec3.sub(CA,A,C);
+
     var d1 = ab-aa;
     var d2=bc-bb;
     var d3=ac-cc;
@@ -95,6 +104,7 @@ var meshes = [];
 function Obstacle(err,contents){
     console.log(err);
     var faces = [];
+    var facen=[];
     var vertices = [];
     lines = contents.split("\n");
     for (var line of lines){
@@ -108,49 +118,123 @@ function Obstacle(err,contents){
                 stuff.push(params[i].split("/"));
             }
             for (var i=1;i<stuff.length-1;i++){
-                faces.push([stuff[0][0]-1,stuff[i][0]-1,stuff[i+1][0]-1])
+                var f=[stuff[0][0]-1,stuff[i][0]-1,stuff[i+1][0]-1];
+                faces.push(f);
+                var n=vec3.create();
+                var AB=vec3.create();
+                var AC=vec3.create();
+                vec3.sub(AB,vertices[f[1]],vertices[f[0]]);
+                vec3.sub(AC,vertices[f[2]],vertices[f[0]]);
+                vec3.cross(n,AB,AC);
+                vec3.normalize(n,n);
+                facen.push(n);
             }   
         }
     }
-    meshes.push({faces:faces,vertices:vertices});
+    meshes.push({faces:faces,vertices:vertices,facen:facen});
 }
-fs.readFile('public/models/corridor_short.obj', 'utf8', Obstacle);
+fs.readFile('public/models/map.obj', 'utf8', Obstacle);
+function distPlane(mesh,fi,P){
+    var AP=vec3.create();
+    vec3.sub(AP,P,mesh.vertices[mesh.faces[fi][0]]);
+    return vec3.dot(mesh.facen[fi],AP);
+}
 function colliding(P,r){
+    var closest=r+1;
+    var cmesh;
+    var cfi;
     for (var mesh of meshes){
-        for (var face of mesh.faces){
-            if (collides(mesh.vertices[face[0]],
-                mesh.vertices[face[1]],
-                mesh.vertices[face[2]],
-                P,r
-                )){
-                    return true;
+        for (var fi=0;fi<mesh.faces.length;fi++){
+            var face=mesh.faces[fi];
+            var dist = distPlane(mesh,fi,P);
+            
+            if (dist<=r&&dist>0){// Don't collide with triangles facing other way
+                if (dist<closest){
+                    if (collides(mesh.vertices[face[0]],
+                    mesh.vertices[face[1]],
+                    mesh.vertices[face[2]],
+                    P,r
+                    )){
+                        closest=dist;
+                        cmesh=mesh;
+                        cfi=fi;
+                    }
                 }
+            }
         }
+    }
+    if (closest<=r){
+        return {mesh:cmesh,fi:cfi};
     }
     return false;
 }
-var players = {};
-var flags = [];
-for (var i=0;i<10;i++){
-    flags.push([(Math.random()-.5)*35,(Math.random()-.5)*35,(Math.random()-.5)*35])
+var UUID = {
+    lut: [],
+    generate()
+    {
+        var lut=this.lut;
+        var d0 = Math.random()*0xffffffff|0;
+        var d1 = Math.random()*0xffffffff|0;
+        var d2 = Math.random()*0xffffffff|0;
+        var d3 = Math.random()*0xffffffff|0;
+        return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
+        lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
+        lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
+        lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
+    }
 }
+for (let i=0; i<256; i++) { UUID.lut[i] = (i<16?'0':'')+(i).toString(16); }
+var players = {};
+var flags = {};
+for (var i=0;i<10;i++){
+    flags[UUID.generate()]=({p:[(Math.random()-.5)*35,(Math.random()-.5)*35,(Math.random()-.5)*35]});
+}
+
 setInterval(function (){ // Update
-    for (key of Object.keys(players)){
+    for (let key of Object.keys(players)){
         
         player=players[key];
+        var g=vec3.clone(player.p);
+        vec3.normalize(g,g);
+        vec3.scale(g,g,.001);
         vec3.add(player.v,player.v,player.a);
+        //vec3.add(player.v,player.v,g);
         vec3.scale(player.v,player.v,.95)
-        player.x+=player.v[0];
-        if (colliding([player.x,player.y,player.z],.5)){
-            player.x-=player.v[0];
+        
+        
+        var i=0;
+        var t1 = vec3.create();
+        while (i<5){
+            vec3.add(player.p,player.p,player.v);
+            var collision = colliding(player.p,.5); // Try to move
+            if (collision){
+                vec3.sub(player.p,player.p,player.v); // Restore location
+                var m=collision.mesh;
+                var n = m.facen[collision.fi];
+                var dist = distPlane(m,collision.fi,player.p)-(.5);
+                vec3.normalize(t1,player.v);
+                vec3.scale(t1,t1,dist);
+                vec3.add(player.p,player.p,t1);
+                vec3.sub(player.v,player.v,t1);
+                vec3.cross(t1,player.v,n);
+                vec3.cross(t1,n,t1);
+                vec3.scale(player.v,t1,vec3.dot(t1,player.v)/vec3.dot(t1,t1));
+            }
+            else{
+                i=5;
+            }
+            i+=1;
         }
-        player.y+=player.v[1];
-        if (colliding([player.x,player.y,player.z],.5)){
-            player.y-=player.v[1];
-        }
-        player.z+=player.v[2];
-        if (colliding([player.x,player.y,player.z],.5)){
-            player.z-=player.v[2];
+        
+        for (let flag of Object.keys(flags)){
+            var d=vec3.create();
+            vec3.sub(d,flags[flag].p,player.p);
+            var s =vec3.dot(d,d);
+            if (s<1){
+                io.emit('rm',flag);
+                delete flags[flag];
+            }
+            
         }
     }
 },15);
@@ -162,15 +246,14 @@ function cos(x){
 }
 io.on('connection', function (socket) {
     console.log("connected client of id: ",socket.id);
-    players[socket.id]={x:0,y:5,z:0,v:[0,0,0],a:[0,0,0]};
+    players[socket.id]={p:[0,15,0],v:[0,0,0],a:[0,0,0],r:{x:0,y:0,z:0}};
     socket.emit({players:players,flags:flags});
-    socket.on('connected', function (data) {
-        
-    })
     socket.on('update', function(data){
+
         var forward=[0,0,-1];
         vec3.rotateX(forward,forward,[0,0,0],data.rotation.x*Math.PI/180);
         vec3.rotateY(forward,forward,[0,0,0],data.rotation.y*Math.PI/180);
+        vec3.rotateZ(forward,forward,[0,0,0],data.rotation.z*Math.PI/180);
         
         var right = vec3.create();
         vec3.cross(right,forward,[0,1,0])
@@ -185,22 +268,24 @@ io.on('connection', function (socket) {
         vec3.scale(up,up,s);
         players[socket.id].a=[0,0,0];
         var a = players[socket.id].a;
-        if (data.forward){
+        players[socket.id].r=data.rotation;
+        controls=data.controls;
+        if (controls.forward){
             vec3.add(a,a,forward);
         }
-        if (data.left){
+        if (controls.left){
             vec3.sub(a,a,right);
         }
-        if (data.right){
+        if (controls.right){
             vec3.add(a,a,right);
         }
-        if (data.backward){
+        if (controls.backward){
             vec3.sub(a,a,forward);
         }
-        if (data.up){
+        if (controls.up){
             vec3.add(a,a,up);
         }
-        if (data.down){
+        if (controls.down){
             vec3.sub(a,a,up);
         }
         socket.emit('update',{players:players,flags:flags});
@@ -209,7 +294,7 @@ io.on('connection', function (socket) {
         console.log("disconnected client of id: ",socket.id);
         delete players[socket.id];
     })
-
+    
 })
 
 http.listen(port, function () {
