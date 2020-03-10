@@ -22,7 +22,7 @@
             </a-assets>
         <a-entity id="flags"></a-entity>
         <a-box></a-box>
-        <a-entity id="offset"><a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false"></a-camera></a-entity>
+        <a-entity id="offset"><a-camera id="camera" position="0 0 0" rotation="0 0 0" wasd-controls-enabled="false" look-controls="pointerLockEnabled: true"></a-camera></a-entity>
         <!-- vue js component that wraps our aframe entity -->
         <vue-player v-for="(player,key) in players" :key="key" :player="player">
 
