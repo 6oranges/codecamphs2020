@@ -87,7 +87,7 @@ function updateGamepad(){
   var gamepad = navigator.getGamepads()[0];
   if (gamepad) {
     myControls.releaseAll("gamepad");
-    if (gamepad.id=="gamepad: 2Axes 11Keys Game  Pad (Vendor: 12bd Product: d015)"){
+    if (gamepad.id=="2Axes 11Keys Game  Pad (Vendor: 12bd Product: d015)"){
       myControls.state("backward","gamepad",gamepad.buttons[0].pressed||gamepad.buttons[3].pressed);
       myControls.state("forward","gamepad",gamepad.buttons[1].pressed);
   
@@ -157,7 +157,7 @@ socket.on('update',obj=>{
   vec3.negate(n,cp.p);
   vec3.normalize(n,n);
   var t = Math.atan2(n[2],Math.sqrt(n[1]**2+n[0]**2));
-  document.getElementById("offset").setAttribute("rotation",{x:t*180/Math.PI,y:0,z:-Math.atan2(n[0],Math.cos(t))*180/Math.PI});
+  //document.getElementById("offset").setAttribute("rotation",{x:t*180/Math.PI,y:0,z:-Math.atan2(n[0],Math.cos(t))*180/Math.PI});
 })
 
 document.addEventListener('keydown',e=>{

@@ -11,6 +11,7 @@
 
     <script src="socket.io-1.4.5.js"></script>
     <script src="gl-matrix-min.js"></script>
+    <script src="https://cdn.rawgit.com/matthewbryancurtis/aframe-star-system-component/db4f1030/index.js"></script>
 </head>
 
 <body>
@@ -30,6 +31,8 @@
 
         </vue-flag>
         <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
+        <a-sky color="black"></a-sky>
+        <a-entity star-system></a-entity>
     </a-scene>
 
     <script src="app.js"></script>

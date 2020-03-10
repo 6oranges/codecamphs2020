@@ -212,13 +212,18 @@ setInterval(function (){ // Update
                 var m=collision.mesh;
                 var n = m.facen[collision.fi];
                 var dist = distPlane(m,collision.fi,player.p)-(.5);
-                vec3.normalize(t1,player.v);
-                vec3.scale(t1,t1,dist);
-                vec3.add(player.p,player.p,t1);
-                vec3.sub(player.v,player.v,t1);
-                vec3.cross(t1,player.v,n);
-                vec3.cross(t1,n,t1);
-                vec3.scale(player.v,t1,vec3.dot(t1,player.v)/vec3.dot(t1,t1));
+                if (dist>=0){
+                    vec3.normalize(t1,player.v);
+                    vec3.scale(t1,t1,dist);
+                    vec3.add(player.p,player.p,t1);
+                    vec3.sub(player.v,player.v,t1);
+                    vec3.cross(t1,player.v,n);
+                    vec3.cross(t1,n,t1);
+                    vec3.scale(player.v,t1,vec3.dot(t1,player.v)/vec3.dot(t1,t1));
+                }
+                else{
+                    i=5;
+                }
             }
             else{
                 i=5;
